@@ -20,7 +20,7 @@ gulp.task('wait', function(cb) {
   setTimeout(function(){ 
     console.log('about to upload your files');
     cb();
-  }, 7000);
+  }, 15000);
 });
 
 // The js task could be replaced with gulp-coffee as desired.
@@ -51,7 +51,7 @@ gulp.task('env', function() {
 
 // Now the dist directory is ready to go. Zip it.
 gulp.task('zip', function(cb) {
-  gulp.src(['dist/**/*', '!dist/package.json', 'dist/.*'])
+  gulp.src(['dist/**/*'])
     .pipe(zip('dist.zip'))
     .pipe(gulp.dest('./'))
     .on('end', function() {cb()});

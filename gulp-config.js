@@ -2,5 +2,5 @@
 
 exports.config = {
   awsRegion: 'us-west-2',
-  lambdaName: 'test'
+  lambdaName: 'udacity-dashboard'
 };
