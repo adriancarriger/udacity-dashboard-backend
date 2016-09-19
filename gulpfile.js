@@ -8,6 +8,7 @@ var AWS = require('aws-sdk');
 var fs = require('fs');
 var runSequence = require('run-sequence');
 const notifier = require('node-notifier');
+var config = require('./gulp-config.js').config;
 
 // First we need to clean out the dist folder and remove the compiled zip file.
 gulp.task('clean', function(cb) {
@@ -24,8 +25,14 @@ gulp.task('wait', function(cb) {
 
 // The js task could be replaced with gulp-coffee as desired.
 gulp.task('js', function() {
-  gulp.src('index.js')
+  gulp.src('./src/lambda.js')
+    .pipe(rename('index.js'))
     .pipe(gulp.dest('dist/'))
+});
+
+gulp.task('config', function() {
+  gulp.src('./src/config.js')
+    .pipe(gulp.dest('./dist/'))
 });
 
 // Here we want to install npm packages to dist, ignoring devDependencies.
@@ -58,15 +65,14 @@ gulp.task('zip', function(cb) {
 //
 // See http://aws.amazon.com/sdk-for-node-js/
 gulp.task('upload', function() {
-  // TODO: This should probably pull from package.json
-  AWS.config.region = 'us-west-2';
+  AWS.config.region = config.awsRegion;
   var lambda = new AWS.Lambda();
-  var functionName = 'test';
+  var functionName = config.lambdaName;
 
   lambda.getFunction({FunctionName: functionName}, function(err, data) {
     if (err) {
       if (err.statusCode === 404) {
-        var warning = 'Unable to find lambda function ' + deploy_function + '. '
+        var warning = 'Unable to find lambda function ' + functionName + '. '
         warning += 'Verify the lambda function name and AWS region are correct.'
         gutil.log(warning);
       } else {
@@ -105,7 +111,7 @@ gulp.task('upload', function() {
 gulp.task('default', function(callback) {
   return runSequence(
     ['clean'],
-    ['js', 'npm', 'env'],
+    ['js', 'config', 'npm', 'env'],
     ['wait'],
     ['zip'],
     ['upload'],
