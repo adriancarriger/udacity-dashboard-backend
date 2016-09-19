@@ -1,7 +1,8 @@
 'use strict';
 
 var Mailgun = require('mailgun').Mailgun;
-var mg = new Mailgun('');
+var config = require('./config.js').config;
+var mg = new Mailgun(config.key);
 
 exports.handler = (event, context, callback) => {
   
