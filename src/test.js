@@ -1,13 +1,20 @@
 'use strict';
 
-var test = require('./lambda.js').handler;
+var test = require('./firebase.js').handler;
 
-test(
-  { },
-  {
-    succeed: (data) => {
-      console.log( data );
-      process.exit();
-    }
-  }
-);
+var event = {
+  queryParams: { logging: false }
+};
+var context = { succeed: onSucceed };
+
+// Run test
+test(event, context);
+
+
+/**
+ * Print returned data and exit process
+ */
+function onSucceed(data) {
+  if (data !== undefined) { console.log( data ); }
+  process.exit();
+}
