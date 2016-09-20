@@ -12,6 +12,7 @@
     "async": "^0.9.0",
     "aws-sdk": "^2.3.5",
     "dotenv": "^0.4.0",
+    "firebase": "^3.4.0",
     "gtfs2geojson": "^2.0.0"
   },
   "devDependencies": {

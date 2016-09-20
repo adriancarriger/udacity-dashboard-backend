@@ -8,16 +8,31 @@
  * with that date.
  */
 
-var Mailgun = require('mailgun').Mailgun;
-var config = require('./config.js').config;
-var mg = new Mailgun(config.key);
+var firebase = require("firebase");
+var config = require("./config.js").config;
 
-exports.handler = (event, context, callback) => {
-  
+exports.handler = (event, context) => {
+
   var queryParams = event.queryParams;
-  
-  
-  
-  callback(null, queryParams);
-  
+
+  // Initialize Firebase
+  firebase.initializeApp(config.firebase.config);
+  // Authenticate
+  var email = config.firebase.credentials.email;
+  var password = config.firebase.credentials.password;
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(info => {
+      getData( (data) => context.succeed('data: ' + data) );
+    })
+    .catch( error => console.log(error) );
 };
+
+function getData(callback) {
+  var database = firebase.database();
+
+  var ref = database.ref('testing');
+
+  ref.on('value', function(snapshot) {
+    callback(snapshot.val());
+  });
+}
