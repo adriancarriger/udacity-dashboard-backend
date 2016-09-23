@@ -81,16 +81,30 @@ function updateData(updates) {
 
 function sortData(data) {
   let updates = [];
+  let firstDate = -654886800000;
   // Branches
   let branchesUpdate = {};
+  let branchInfo = {};
   for (let i = 0; i <  data.branches.length; i++) {
+    let startEmployees = 0;
+    let openDate = moment(data.branches[i].opened, "MM/DD/YYYY").valueOf();
+    if (openDate <= firstDate) {
+      startEmployees = data.branches[i].average_employees;
+    }
     branchesUpdate[data.branches[i].id] = {
       city: data.branches[i].city,
-      employees: data.branches[i].average_employees,
+      employees: startEmployees,
       lat: data.branches[i].lat,
       lng: data.branches[i].lng,
       state: data.branches[i].state
     };
+    branchInfo[data.branches[i].id] = {
+      openDates: {
+        opened: openDate,
+        closed: moment(data.branches[i].closed, "MM/DD/YYYY").valueOf()
+      },
+      employees: data.branches[i].average_employees
+    }
   }
   updates.push({
     ref: '/client/branches',
@@ -172,11 +186,14 @@ function sortData(data) {
   });
   // set inital values
   let branchLog = {};
-  let firstDate = -654886800000;
   branchLog[firstDate] = {};
   for (let i = 0; i < data.branches.length; i++) {
    let branchId = data.branches[i].id;
    branchLog[firstDate][branchId] = data.branches[i].average_employees;
+   if (branchInfo[branchId].openDates.opened > firstDate) {
+      // Set to zero employees if branch is closed
+      branchLog[firstDate][branchId] = 0;
+    }
   }
   let lastStamp = firstDate;
   // Apply changes
@@ -195,10 +212,20 @@ function sortData(data) {
         }
         // Apply change
         branchLog[branchChanges[i].stamp][branchId] = periodChanges[branchId] + branchLog[lastStamp][branchId];
+        // If branch is closed during date, then set employees to zero
+        if (branchInfo[branchId].openDates.opened > branchChanges[i].stamp
+          || (!isNaN(branchInfo[branchId].openDates.closed)
+            && branchInfo[branchId].openDates.closed < branchChanges[i].stamp)) {
+          // Set to zero employees if branch is closed
+          branchLog[branchChanges[i].stamp][branchId] = 0;
+        } else if (branchLog[lastStamp][branchId] === 0) {
+          branchLog[branchChanges[i].stamp][branchId] = branchInfo[branchId].employees;
+        }
       }
     }
     lastStamp = branchChanges[i].stamp;
   }
+  console.log(branchLog);
   updates.push({
     ref: 'server/employee_count',
     data: branchLog
