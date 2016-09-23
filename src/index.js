@@ -15,7 +15,7 @@ init(false);
 auth()
   .then(prepareData)
   .then(sortData)
-  .then(postAll)
+  .then(updateData)
   .then(process.exit);
 
 function prepareData() {
@@ -62,15 +62,41 @@ function auth() {
     config.firebase.credentials.password);
 }
 
-function postAll(sortedData) {
+function updateData(updates) {
   return new Promise( (resolve, reject) => {
-    firebase.database().ref('server/employee_count').transaction( () => {
-      return sortedData;
-    }, () => resolve() );
+    let completed = 0;
+    for (let i = 0; i < updates.length; i++) {
+      let ref = firebase.database().ref( updates[i].ref );
+      ref.transaction( () => {
+        return updates[i].data;
+      }, () => {
+        completed++;
+        if (completed === updates.length) {
+          resolve();
+        }
+      });
+    }
   });
 }
 
 function sortData(data) {
+  let updates = [];
+  // Branches
+  let branchesUpdate = [];
+  for (let i = 0; i <  data.branches.length; i++) {
+    branchesUpdate.push({
+      city: data.branches[i].city,
+      employees: data.branches[i].average_employees,
+      lat: data.branches[i].lat,
+      lng: data.branches[i].lng,
+      state: data.branches[i].state
+    });
+  }
+  updates.push({
+    ref: '/client/branches',
+    data: branchesUpdate
+  });
+
   // Employee changes
   let eChanges = {};
   for (let i = 0; i < data.changes.length; i++) {
@@ -173,7 +199,19 @@ function sortData(data) {
     }
     lastStamp = branchChanges[i].stamp;
   }
-  return branchLog;
+  updates.push({
+    ref: 'server/employee_count',
+    data: branchLog
+  });
+  updates.push({
+    ref: 'client/current',
+    data: '-654886800000'
+  });
+  updates.push({
+    ref: 'server/current',
+    data: '-654886800000'
+  });
+  return updates;
 }
 
 function updateChange(object, stamp, branchId, change) {
