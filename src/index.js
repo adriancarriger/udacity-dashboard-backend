@@ -82,15 +82,15 @@ function updateData(updates) {
 function sortData(data) {
   let updates = [];
   // Branches
-  let branchesUpdate = [];
+  let branchesUpdate = {};
   for (let i = 0; i <  data.branches.length; i++) {
-    branchesUpdate.push({
+    branchesUpdate[data.branches[i].id] = {
       city: data.branches[i].city,
       employees: data.branches[i].average_employees,
       lat: data.branches[i].lat,
       lng: data.branches[i].lng,
       state: data.branches[i].state
-    });
+    };
   }
   updates.push({
     ref: '/client/branches',
