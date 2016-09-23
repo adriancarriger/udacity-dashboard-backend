@@ -1,6 +1,6 @@
 'use strict';
 
-var test = require('./firebase.js').handler;
+var test = require('./lambda.js').handler;
 
 var event = {
   queryParams: { logging: false }

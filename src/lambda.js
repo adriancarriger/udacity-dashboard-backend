@@ -19,7 +19,7 @@ exports.handler = (event, context) => {
   auth()
     .then(getData)
     .then(sortData)
-    .then(postData)
+    .then(updateData)
     .then(context.succeed);
 
 };
@@ -39,29 +39,64 @@ function auth() {
     config.firebase.credentials.password);
 }
 
-function postData(postInfo) {
+function updateData(updates) {
   return new Promise( (resolve, reject) => {
-    var testRef = firebase.database().ref(postInfo.ref);
-    testRef.transaction( () => {
-      return postInfo.data;
-    }, () => {
-      resolve();
-    });
+    let completed = 0;
+    for (let i = 0; i < updates.length; i++) {
+      let ref = firebase.database().ref( updates[i].ref );
+      ref.transaction( () => {
+        return updates[i].data;
+      }, () => {
+        completed++;
+        if (completed === updates.length) {
+          resolve();
+        }
+      });
+    }
   });
 }
 
 function getData() {
   return new Promise( (resolve, reject) => {
     var database = firebase.database();
-    var ref = database.ref('test/ref');
+    var ref = database.ref('server');
     ref.once('value', (snapshot) => {
       resolve(snapshot.val());
     });
   }); 
 }
 
-function sortData(data2) {
-  var ref = 'test/ref';
-  var data = 'test data-' + Date.now();
-  return {ref: ref, data: data};
+function sortData(data) {
+  let currentTime = data.current + '';
+  let times = Object.keys(data.employee_count);
+  times.sort( (a, b) => {
+    return a - b;
+  });
+  let newTime = undefined;
+  for (let i = 0; i < times.length; i++) {
+    if (times[i] === currentTime) {
+      if (i === times.length - 1) {
+        newTime = times[0];
+      } else {
+        newTime = times[i + 1];
+      }
+    }
+  }
+  let updates = [
+    {
+      ref: 'client/current',
+      data: newTime
+    },
+    {
+      ref: 'server/current',
+      data: newTime
+    }
+  ];
+  for (let i = 1; i < data.employee_count[newTime].length; i++) {
+    updates.push({
+      ref: 'client/branches/' + i + '/employees',
+      data: data.employee_count[newTime][i]
+    }); 
+  }
+  return updates;
 }
