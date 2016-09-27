@@ -1,5 +1,5 @@
-date,employee_id,branch_id,needs improvement,ref_url,comments
-4/6/1992,1,1,,http://theoffice.wikia.com/wiki/Michael_Scott,"As of ""Michael's Last Dundies"", Michael has worked at Dunder Mifflin for 9,986,000 minutes, meaning he would have started work on April 6, 1992."
-3/26/2009,1,-1,,http://theoffice.wikia.com/wiki/Two_Weeks,
-4/23/2009,1,1,,http://theoffice.wikia.com/wiki/Broke,
-5/5/2011,1,-1,,http://theoffice.wikia.com/wiki/The_Inner_Circle,
+date,type,related_id,branch_id,needs improvement,ref_url,comments
+4/6/1992,Employee,1,1,,http://theoffice.wikia.com/wiki/Michael_Scott,"As of ""Michael's Last Dundies"", Michael has worked at Dunder Mifflin for 9,986,000 minutes, meaning he would have started work on April 6, 1992."
+3/26/2009,Employee,1,-1,,http://theoffice.wikia.com/wiki/Two_Weeks,
+4/23/2009,Employee,1,1,,http://theoffice.wikia.com/wiki/Broke,
+5/5/2011,Employee,1,-1,,http://theoffice.wikia.com/wiki/The_Inner_Circle,

@@ -116,14 +116,18 @@ function sortData(data) {
   for (let i = 0; i < data.changes.length; i++) {
     let stamp = moment(data.changes[i].date, "MM/DD/YYYY").valueOf();
     let branchId = data.changes[i].branch_id;
-    let eId = data.changes[i].employee_id;
-    if (!(eId in eChanges)) {
-      eChanges[eId] = [];
+    if (data.changes[i].type === 'Employee') {
+      let eId = data.changes[i].id;
+      if (!(eId in eChanges)) {
+        eChanges[eId] = [];
+      }
+      eChanges[eId].push({
+        stamp: stamp,
+        branchId: branchId
+      });
+    } else if (data.changes[i].type === 'Client') {
+      
     }
-    eChanges[eId].push({
-      stamp: stamp,
-      branchId: branchId
-    });
   }
   // Branch changes
   let aggregate = { };

@@ -17,9 +17,7 @@ exports.handler = (event, context) => {
   
   // Run Firebase
   auth()
-    .then(getData)
-    .then(sortData)
-    .then(updateData)
+    .then(runForAMinute)
     .then(context.succeed);
 
 };
@@ -37,6 +35,35 @@ function auth() {
   return firebase.auth().signInWithEmailAndPassword(
     config.firebase.credentials.email,
     config.firebase.credentials.password);
+}
+
+function runForAMinute() {
+  return new Promise( (resolve, reject) => {
+    runOnce();
+    let runTotal = 1;
+    let maxPerMinute = 6;
+    for (let i = 1; i < maxPerMinute; i++) {
+      setTimeout( () => {
+        runOnce()
+          .then( () => {
+            runTotal++;
+            if (runTotal === maxPerMinute) {
+              resolve();
+            }
+          });
+      }, 10000 * i);
+    }
+  });
+}
+
+function runOnce() {
+  return new Promise( (resolve, reject) => {
+    getData()
+    .then(sortData)
+    .then(updateData)
+    .then( () => resolve() );
+  });
+  
 }
 
 function updateData(updates) {
