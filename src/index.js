@@ -82,28 +82,65 @@ function updateData(updates) {
 function sortData(data) {
   let updates = [];
   let firstDate = -654886800000;
+
+  // Changes
+  let changes = { };
+  let types = [ ];
+
+  for (let i = 0; i < data.changes.length; i++) {
+    let stamp = moment(data.changes[i].date, "MM/DD/YYYY").valueOf();
+    let branchId = data.changes[i].branch_id;
+    let changeType = (data.changes[i].type).toLowerCase() + 's';
+    
+    if (!(changeType in changes)) {
+      changes[changeType] = {};
+      types.push(changeType);
+    }
+    let id = data.changes[i].related_id;
+    if (!(id in changes[changeType])) {
+      changes[changeType][id] = [];
+    }
+    changes[changeType][id].push({
+      stamp: stamp,
+      branchId: branchId
+    });
+  }
+
+  let defaultTypeStart = { };
+  for (let i = 0; i < types.length; i++) {
+    defaultTypeStart[types[i]] = 0;
+  }
+
   // Branches
+  let typeStart;
   let branchesUpdate = {};
   let branchInfo = {};
   for (let i = 0; i <  data.branches.length; i++) {
-    let startEmployees = 0;
+    typeStart = defaultTypeStart;
     let openDate = moment(data.branches[i].opened, "MM/DD/YYYY").valueOf();
     if (openDate <= firstDate) {
-      startEmployees = data.branches[i].average_employees;
+      for (let n = 0; n < types.length; n++) {
+        typeStart[types[n]] = data.branches[i]['average_' + types[n]];
+      }
     }
-    branchesUpdate[data.branches[i].id] = {
+    let thisBranchUpdate = {
       city: data.branches[i].city,
-      employees: startEmployees,
       lat: data.branches[i].lat,
       lng: data.branches[i].lng,
       state: data.branches[i].state
-    };
+    }
+    for (let n = 0; n < types.length; n++) {
+      thisBranchUpdate[types[n]] = typeStart[types[n]];
+    }
+    branchesUpdate[data.branches[i].id] = thisBranchUpdate;
     branchInfo[data.branches[i].id] = {
       openDates: {
         opened: openDate,
         closed: moment(data.branches[i].closed, "MM/DD/YYYY").valueOf()
       },
-      employees: data.branches[i].average_employees
+    }
+    for (let n = 0; n < types.length; n++) {
+      branchInfo[data.branches[i].id][types[n]] = data.branches[i]['average_' + types[n]];;
     }
   }
   updates.push({
@@ -111,24 +148,29 @@ function sortData(data) {
     data: branchesUpdate
   });
 
-  // Employee changes
-  let eChanges = {};
-  for (let i = 0; i < data.changes.length; i++) {
-    let stamp = moment(data.changes[i].date, "MM/DD/YYYY").valueOf();
-    let branchId = data.changes[i].branch_id;
-    if (data.changes[i].type === 'Employee') {
-      let eId = data.changes[i].id;
-      if (!(eId in eChanges)) {
-        eChanges[eId] = [];
-      }
-      eChanges[eId].push({
-        stamp: stamp,
-        branchId: branchId
+  for (let changeType in changes) {
+    if (changes.hasOwnProperty(changeType)) {
+      let branchLog = sortType( changes[changeType], data.branches, firstDate, branchInfo, changeType );
+      let singularType = changeType.substring(0, changeType.length - 1);
+      updates.push({
+        ref: 'server/' + singularType + '_count',
+        data: branchLog
       });
-    } else if (data.changes[i].type === 'Client') {
-      
     }
   }
+
+  updates.push({
+    ref: 'client/current',
+    data: firstDate + ''
+  });
+  updates.push({
+    ref: 'server/current',
+    data: firstDate + ''
+  });
+  return updates;
+}
+
+function sortType(eChanges, branches, firstDate, branchInfo, type) {
   // Branch changes
   let aggregate = { };
   for (let eId in eChanges) {
@@ -158,8 +200,8 @@ function sortData(data) {
   // Create imaginary changes for unlisted branches
   for (let stamp in aggregate) {
     if (aggregate.hasOwnProperty(stamp)) {
-      for (let i = 0; i < data.branches.length; i++) {
-        let branchId = data.branches[i].id;
+      for (let i = 0; i < branches.length; i++) {
+        let branchId = branches[i].id;
         if (!(branchId in aggregate[stamp])) {
           // generate data
           let change = 0;
@@ -191,11 +233,12 @@ function sortData(data) {
   // set inital values
   let branchLog = {};
   branchLog[firstDate] = {};
-  for (let i = 0; i < data.branches.length; i++) {
-   let branchId = data.branches[i].id;
-   branchLog[firstDate][branchId] = data.branches[i].average_employees;
-   if (branchInfo[branchId].openDates.opened > firstDate) {
-      // Set to zero employees if branch is closed
+  for (let i = 0; i < branches.length; i++) {
+    let branchId = branches[i].id;
+    branchLog[firstDate][branchId] = branches[i]['average_' + type];
+    
+    if (branchInfo[branchId].openDates.opened > firstDate) {
+      // Set to zero of type if branch is closed
       branchLog[firstDate][branchId] = 0;
     }
   }
@@ -216,33 +259,20 @@ function sortData(data) {
         }
         // Apply change
         branchLog[branchChanges[i].stamp][branchId] = periodChanges[branchId] + branchLog[lastStamp][branchId];
-        // If branch is closed during date, then set employees to zero
+        // If branch is closed during date, then set current type to zero
         if (branchInfo[branchId].openDates.opened > branchChanges[i].stamp
           || (!isNaN(branchInfo[branchId].openDates.closed)
             && branchInfo[branchId].openDates.closed < branchChanges[i].stamp)) {
-          // Set to zero employees if branch is closed
+          // Set to zero of type if branch is closed
           branchLog[branchChanges[i].stamp][branchId] = 0;
         } else if (branchLog[lastStamp][branchId] === 0) {
-          branchLog[branchChanges[i].stamp][branchId] = branchInfo[branchId].employees;
+          branchLog[branchChanges[i].stamp][branchId] = branchInfo[branchId][type];
         }
       }
     }
     lastStamp = branchChanges[i].stamp;
   }
-  console.log(branchLog);
-  updates.push({
-    ref: 'server/employee_count',
-    data: branchLog
-  });
-  updates.push({
-    ref: 'client/current',
-    data: '-654886800000'
-  });
-  updates.push({
-    ref: 'server/current',
-    data: '-654886800000'
-  });
-  return updates;
+  return branchLog;
 }
 
 function updateChange(object, stamp, branchId, change) {
