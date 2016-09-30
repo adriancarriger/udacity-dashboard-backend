@@ -20,7 +20,7 @@ auth()
 
 function prepareData() {
   let completed = 0;
-  let preparedData = {};
+  let preparedData = { };
   return new Promise(function (resolve, reject) {
     for (let i = 0; i < items.length; i++) {
        let name = items[i];
@@ -39,7 +39,7 @@ function prepareData() {
 
 function getJson(file) {
   return new Promise(function (resolve, reject) {
-    let converter = new Converter({});
+    let converter = new Converter({ });
     converter.fromFile(file, (err,result) => {
       if (err) { reject(err); }
       resolve(result);
@@ -80,7 +80,7 @@ function updateData(updates) {
 }
 
 function sortData(data) {
-  let updates = [];
+  let updates = [ ];
   let firstDate = -654886800000;
 
   // Changes
@@ -93,12 +93,12 @@ function sortData(data) {
     let changeType = (data.changes[i].type).toLowerCase() + 's';
     
     if (!(changeType in changes)) {
-      changes[changeType] = {};
+      changes[changeType] = { };
       types.push(changeType);
     }
     let id = data.changes[i].related_id;
     if (!(id in changes[changeType])) {
-      changes[changeType][id] = [];
+      changes[changeType][id] = [ ];
     }
     changes[changeType][id].push({
       stamp: stamp,
@@ -113,8 +113,8 @@ function sortData(data) {
 
   // Branches
   let typeStart;
-  let branchesUpdate = {};
-  let branchInfo = {};
+  let branchesUpdate = { };
+  let branchInfo = { };
   for (let i = 0; i <  data.branches.length; i++) {
     typeStart = defaultTypeStart;
     let openDate = moment(data.branches[i].opened, "MM/DD/YYYY").valueOf();
@@ -203,10 +203,6 @@ function sortData(data) {
       }
     }
   }
-  // Print results (in order)
-  for (let i = 0; i < times.length; i++) {
-    console.log('\n' + times[i] + '\n', types_count[times[i]]);
-  }
 
   updates.push({
     ref: 'server/types_count',
@@ -224,18 +220,18 @@ function sortData(data) {
   return updates;
 }
 
-function sortType(eChanges, branches, firstDate, branchInfo, type) {
+function sortType(changes, branches, firstDate, branchInfo, type) {
   // Branch changes
   let aggregate = { };
-  for (let eId in eChanges) {
-    if (eChanges.hasOwnProperty(eId)) {
-      eChanges[eId].sort( (a, b) => {
+  for (let eId in changes) {
+    if (changes.hasOwnProperty(eId)) {
+      changes[eId].sort( (a, b) => {
         return a.stamp - b.stamp;
       });
       let previousBranchId = -1;
-      for (let i = 0; i < eChanges[eId].length; i++) {
-        let stamp = eChanges[eId][i].stamp;
-        let branchId = eChanges[eId][i].branchId;
+      for (let i = 0; i < changes[eId].length; i++) {
+        let stamp = changes[eId][i].stamp;
+        let branchId = changes[eId][i].branchId;
         if (branchId === -1 || previousBranchId !== -1) {
           // Change the last branchId
           aggregate = updateChange(aggregate, stamp, previousBranchId, -1);
@@ -248,9 +244,9 @@ function sortType(eChanges, branches, firstDate, branchInfo, type) {
     }
   }
 
-  let randomChanges = {};
+  let randomChanges = { };
   let maxVariation = 5;
-  let branchChanges = [];
+  let branchChanges = [ ];
   // Create imaginary changes for unlisted branches
   for (let stamp in aggregate) {
     if (aggregate.hasOwnProperty(stamp)) {
@@ -285,8 +281,8 @@ function sortType(eChanges, branches, firstDate, branchInfo, type) {
     return a.stamp - b.stamp;
   });
   // set inital values
-  let branchLog = {};
-  branchLog[firstDate] = {};
+  let branchLog = { };
+  branchLog[firstDate] = { };
   for (let i = 0; i < branches.length; i++) {
     let branchId = branches[i].id;
     branchLog[firstDate][branchId] = branches[i]['average_' + type];
@@ -305,7 +301,7 @@ function sortType(eChanges, branches, firstDate, branchInfo, type) {
     for (let branchId in periodChanges) {
       if (periodChanges.hasOwnProperty(branchId)) {
         if (!(branchChanges[i].stamp in branchLog)) {
-          branchLog[branchChanges[i].stamp] = {};
+          branchLog[branchChanges[i].stamp] = { };
         }
         if (!(branchId in branchLog[branchChanges[i].stamp])) {
           // new branch (not in inital values from `firstDate`)
@@ -331,7 +327,7 @@ function sortType(eChanges, branches, firstDate, branchInfo, type) {
 
 function updateChange(object, stamp, branchId, change) {
   if (!(stamp in object)) {
-    object[stamp] = {};
+    object[stamp] = { };
   }
   if (!(branchId in object[stamp])) {
     object[stamp][branchId] = 0;
