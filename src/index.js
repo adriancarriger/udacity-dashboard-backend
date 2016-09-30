@@ -139,25 +139,79 @@ function sortData(data) {
         closed: moment(data.branches[i].closed, "MM/DD/YYYY").valueOf()
       },
     }
-    for (let n = 0; n < types.length; n++) {
-      branchInfo[data.branches[i].id][types[n]] = data.branches[i]['average_' + types[n]];;
+    for (let j = 0; j < types.length; j++) {
+      branchInfo[data.branches[i].id][types[j]] = data.branches[i]['average_' + types[j]];;
     }
   }
   updates.push({
     ref: '/client/branches',
     data: branchesUpdate
   });
-
+  let branchLogs = { };
+  let times = [ ];
+  let types_count = { };
   for (let changeType in changes) {
     if (changes.hasOwnProperty(changeType)) {
       let branchLog = sortType( changes[changeType], data.branches, firstDate, branchInfo, changeType );
-      let singularType = changeType.substring(0, changeType.length - 1);
-      updates.push({
-        ref: 'server/' + singularType + '_count',
-        data: branchLog
-      });
+      
+      branchLogs[changeType] = branchLog;
+
+      let timesOfType = Object.keys( branchLog );
+
+      for (let i = 0; i < timesOfType.length; i++) {
+        if (times.lastIndexOf(timesOfType[i]) === -1) {
+          times.push( timesOfType[i] );
+          types_count[timesOfType[i]] = { }
+        }
+      }
     }
   }
+  // Sort times
+  times.sort( (a, b) => {
+    return a - b;
+  });
+  // Merge types  
+  for (let changeType in branchLogs) {
+    if (branchLogs.hasOwnProperty(changeType)) {
+      let log = branchLogs[changeType];
+      let lastOfType;
+      for (let i = 0; i < times.length; i++) {
+        let time = times[i];
+        let copyLog;
+        let setZero = false;
+        if (time in log) { // If this type has data for this time, then use that data
+          copyLog = log[time];
+        } else if (lastOfType !== undefined) { // if not, then copy the last used data
+          copyLog = lastOfType;
+        } else { // if this is the first entry, then set to zero
+          copyLog = branchInfo;
+          setZero = true;
+        }
+        for (let branchId in copyLog) {
+          if (copyLog.hasOwnProperty(branchId)) {
+            if (!(branchId in types_count[time])) {
+              types_count[time][branchId] = { };
+            }
+            if (setZero === true) {
+              types_count[time][branchId][changeType] = 0;
+            } else {
+              types_count[time][branchId][changeType] = copyLog[branchId];
+            }
+          }
+        }
+        lastOfType = copyLog;
+      }
+    }
+  }
+  // Print results (in order)
+  for (let i = 0; i < times.length; i++) {
+    console.log('\n' + times[i] + '\n', types_count[times[i]]);
+  }
+
+  updates.push({
+    ref: 'server/types_count',
+    data: types_count
+  });
 
   updates.push({
     ref: 'client/current',
