@@ -95,7 +95,7 @@ function getData() {
 
 function sortData(data) {
   let currentTime = data.current + '';
-  let times = Object.keys(data.employee_count);
+  let times = Object.keys(data.types_count);
   times.sort( (a, b) => {
     return a - b;
   });
@@ -119,11 +119,16 @@ function sortData(data) {
       data: newTime
     }
   ];
-  for (let i = 1; i < data.employee_count[newTime].length; i++) {
-    updates.push({
-      ref: 'client/branches/' + i + '/employees',
-      data: data.employee_count[newTime][i]
-    }); 
+  for (let i = 1; i < data.types_count[newTime].length; i++) {
+    let typeObj = data.types_count[newTime][i];
+    for (let changeType in typeObj) {
+      if (typeObj.hasOwnProperty(changeType)) {
+        updates.push({
+          ref: 'client/branches/' + i + '/' + changeType,
+          data: data.types_count[newTime][i][changeType]
+        }); 
+      }
+    }
   }
   return updates;
 }
