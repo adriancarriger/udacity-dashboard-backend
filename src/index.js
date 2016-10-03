@@ -234,12 +234,15 @@ function sortData(data) {
       }
     }
   }
-
+  updates.push({
+    ref: '/client/issues_raw',
+    data: data.issues
+  });
   updates.push({
     ref: 'server/reports',
     data: reports
   });
-
+  
   updates.push({
     ref: 'client/current',
     data: firstDate + ''
