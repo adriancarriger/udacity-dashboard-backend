@@ -8,7 +8,7 @@ let moment = require('moment');
 
 let config = require("./config.js").config;
 
-let items = ['branches', 'employees', 'changes'];
+let items = ['branches', 'employees', 'changes', 'issues'];
 
 init(false);
 
@@ -149,7 +149,7 @@ function sortData(data) {
   });
   let branchLogs = { };
   let times = [ ];
-  let types_count = { };
+  let reports = { };
   for (let changeType in changes) {
     if (changes.hasOwnProperty(changeType)) {
       let branchLog = sortType( changes[changeType], data.branches, firstDate, branchInfo, changeType );
@@ -161,7 +161,38 @@ function sortData(data) {
       for (let i = 0; i < timesOfType.length; i++) {
         if (times.lastIndexOf(timesOfType[i]) === -1) {
           times.push( timesOfType[i] );
-          types_count[timesOfType[i]] = { }
+          // Count issues
+          let totalIssues = {
+            client: 0,
+            employee: 0
+          };
+          for (let j = 0; j < data.issues.length; j++) {
+            let use = false;
+            let opened = moment(data.issues[j].opened, "MM/DD/YYYY").valueOf();
+            let closed;
+            if (data.issues[j].closed !== '') {
+              closed = moment(data.issues[j].closed, "MM/DD/YYYY").valueOf()
+            }
+            let min = false;
+            if (i === 0) {
+              if (opened <= timesOfType[0]) {
+                min = true;
+              }
+            } else {
+              if (opened > timesOfType[i - 1] || opened <= timesOfType[i]) {
+                min = true;
+              }
+            }
+            if (min && (closed === undefined || timesOfType[i] < closed) ) {
+              let issueType = (data.issues[j].type).toLowerCase();
+              totalIssues[issueType]++;
+            }
+          }
+          // Save data
+          reports[timesOfType[i]] = {
+            branches: { },
+            issues: totalIssues
+          }
         }
       }
     }
@@ -189,13 +220,13 @@ function sortData(data) {
         }
         for (let branchId in copyLog) {
           if (copyLog.hasOwnProperty(branchId)) {
-            if (!(branchId in types_count[time])) {
-              types_count[time][branchId] = { };
+            if (!(branchId in reports[time].branches)) {
+              reports[time].branches[branchId] = { };
             }
             if (setZero === true) {
-              types_count[time][branchId][changeType] = 0;
+              reports[time].branches[branchId][changeType] = 0;
             } else {
-              types_count[time][branchId][changeType] = copyLog[branchId];
+              reports[time].branches[branchId][changeType] = copyLog[branchId];
             }
           }
         }
@@ -205,8 +236,8 @@ function sortData(data) {
   }
 
   updates.push({
-    ref: 'server/types_count',
-    data: types_count
+    ref: 'server/reports',
+    data: reports
   });
 
   updates.push({
@@ -334,8 +365,4 @@ function updateChange(object, stamp, branchId, change) {
   }
   object[stamp][branchId] += change;
   return object;
-}
-
-function asdf() {
-
 }
