@@ -13,12 +13,13 @@ let config = require("./config.js").config;
 let moment = require('moment');
 
 exports.handler = (event, context) => {
-
+ 
   init(event.queryParams);
   
   // Run Firebase
   auth()
-    .then(runForAMinute)
+    .then(updateRunUntil)
+    .then(update)
     .then(context.succeed);
 
 };
@@ -38,46 +39,81 @@ function auth() {
     config.firebase.credentials.password);
 }
 
-function runForAMinute() {
+function updateRunUntil() {
   return new Promise( (resolve, reject) => {
-    runOnce();
-    let runTotal = 1;
-    let maxPerMinute = 6;
-    for (let i = 1; i < maxPerMinute; i++) {
-      setTimeout( () => {
-        runOnce()
-          .then( () => {
-            runTotal++;
-            if (runTotal === maxPerMinute) {
-              resolve();
-            }
-          });
-      }, 10000 * i);
-    }
+    firebase.database().ref('server/run_info/run_until').transaction( () => {
+      let runTime = 1000 * 20;
+      // let runTime = 1000 * 60 * 5;
+      return moment().valueOf() + runTime;
+    }, () => {
+      resolve();
+    });
   });
 }
 
-function runOnce() {
+function update() {
+  return new Promise( (resolve, reject) => {
+    checkForUpdates().then( updateNeeded => {
+      if (updateNeeded) {
+        let database = firebase.database();
+        // Set running status to true
+        database.ref('server/run_info/running').transaction( () => {
+          return true;
+        }, () => {
+          // Run every 10 seconds
+          let interval = setInterval( () => {
+            run().then( finished => {
+              if (finished) {
+                resolve();
+              }
+            });
+          }, 10 * 1000);
+        });
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+function checkForUpdates() {
+  return new Promise( (resolve, reject) => {
+    getData().then( data => {
+      let secondsSinceUpdate = (moment().valueOf() - data.run_info.last_update) / 1000;
+      if ( (data.run_info.running && secondsSinceUpdate < 20)
+        || moment( data.run_info.run_until ).valueOf() < moment().valueOf() ) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+}
+
+function run() {
   return new Promise( (resolve, reject) => {
     getData()
     .then(sortData)
     .then(updateData)
-    .then( () => resolve() );
+    .then( finished => resolve(finished) );
   });
-  
 }
 
 function updateData(updates) {
   return new Promise( (resolve, reject) => {
     let completed = 0;
+    let finished = false;
     for (let i = 0; i < updates.length; i++) {
       let ref = firebase.database().ref( updates[i].ref );
       ref.transaction( () => {
         return updates[i].data;
       }, () => {
         completed++;
+        if (updates[i].ref === 'server/run_info/running' && updates[i].data === false) {
+          finished = true;
+        }
         if (completed === updates.length) {
-          resolve();
+          resolve(finished);
         }
       });
     }
@@ -207,6 +243,10 @@ function sortData(data) {
     {
       ref: 'client/issues_raw',
       data: raw_issues
+    },
+    {
+      ref: 'server/run_info/last_update',
+      data: moment().valueOf()
     }
   ];
   // Update branch data
@@ -220,6 +260,13 @@ function sortData(data) {
         }); 
       }
     }
+  }
+  // Check if updates should pause
+  if ( data.run_info.run_until < moment().valueOf() ) {
+    updates.push({
+      ref: 'server/run_info/running',
+      data: false
+    }); 
   }
   return updates;
 }
