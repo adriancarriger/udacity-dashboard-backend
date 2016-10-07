@@ -101,7 +101,12 @@ function sortData(data) {
     return a - b;
   });
   let newTime = undefined;
-  let itemNumber;
+  let itemNumber; // The number of dates to display in a chart
+  /**
+   * Finds the new time
+   * It takes the current time, loops through
+   * the available times and picks the next time avaiable. 
+   */
   for (let i = 0; i < times.length; i++) {
     if (times[i] === currentTime) {
       if (i === times.length - 1) {
@@ -119,6 +124,11 @@ function sortData(data) {
   };
   let labels = [ ];
   let currentIssues = 0;
+  /**
+   * Collect data to display in charts.
+   * This starts with the first date's chart data and continues to collect
+   * data until it reaches the current date's set of data. 
+   */
   for (let i = 0; i <= itemNumber; i++) {
     let thisTime = times[i];
     labels.push( moment( Number(thisTime) ).format('MM/DD/YYYY') );
@@ -136,13 +146,31 @@ function sortData(data) {
       currentIssues = data.reports[thisTime].issues.client + data.reports[thisTime].issues.employee;
     }
   }
+  /**
+   * If there are only <= 2 items, then we show a blank date with
+   * zero as the chart data, so the very first date would show an
+   * increase from zero to the first date's datapoint.
+   */
   if (itemNumber <= 2) {
     labels.unshift('');
     sales.unshift(0);
     issues.client.unshift(0);
     issues.employee.unshift(0);
   }
-  // Set updates
+  /**
+   * Only show raw issue data that would be avaiable on the current date
+   */
+  let raw_issues = [];
+  for (let i = 0; i < data.issues_raw.length; i++){
+    let issue = data.issues_raw[i];
+    if ( newTime >= moment(issue.opened, "MM/DD/YYYY").valueOf() ) {
+      if (issue.closed !== '' && moment(issue.closed, "MM/DD/YYYY").valueOf() > newTime ) {
+        issue.closed = '';
+      }
+      raw_issues.push( issue );
+    }
+  }
+  // Set updates 
   let updates = [
     {
       ref: 'client/current',
@@ -175,6 +203,10 @@ function sortData(data) {
     {
       ref: 'client/issues/total',
       data: currentIssues
+    },
+    {
+      ref: 'client/issues_raw',
+      data: raw_issues
     }
   ];
   // Update branch data

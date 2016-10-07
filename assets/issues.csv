@@ -1,8 +1,8 @@
-id,type,opened,closed,related_id,comments
-1,Employee,5/4/2007,,,
-2,Client,3/3/1999,4/2/2000,,
-3,Employee,6/1/1980,6/30/1980,,
-4,Client,5/3/2007,,,
-5,Client,6/2/2010,7/5/2010,,
-6,Employee,5/3/2012,,,
-7,Employee,1/6/2014,,,
+id,type,opened,closed,complainer,complainee,,comments
+1,Employee,5/4/2007,,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+2,Client,3/3/1999,4/2/2000,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+3,Employee,6/1/1980,6/30/1980,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+4,Client,5/3/2007,,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+5,Client,6/2/2010,7/5/2010,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+6,Employee,5/3/2012,,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+7,Employee,1/6/2014,,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."

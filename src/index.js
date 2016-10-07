@@ -8,7 +8,7 @@ let moment = require('moment');
 
 let config = require("./config.js").config;
 
-let items = ['branches', 'employees', 'changes', 'issues'];
+let items = ['branches', 'employees', 'clients', 'changes', 'issues'];
 
 init(false);
 
@@ -234,9 +234,31 @@ function sortData(data) {
       }
     }
   }
+  // Sort raw issues
+  let rawIssues = [];
+  for (let i = 0; i <  data.issues.length; i++) {
+   // Set complainer
+   let complainer = 'Anonymous';
+   if (data.issues[i].complainer !== '') {
+     complainer = data.issues[i].complainer;
+   }
+   // Set complainee
+   let complainee = 'Unknown';
+   if (data.issues[i].complainee !== '') {
+     complainee = data.issues[i].complainee;
+   }
+   rawIssues.push({
+     type: data.issues[i].type,
+     complainer: complainer,
+     complainee: complainee,
+     comments: data.issues[i].comments,
+     opened: data.issues[i].opened,
+     closed: data.issues[i].closed
+   }); 
+  }
   updates.push({
-    ref: '/client/issues_raw',
-    data: data.issues
+    ref: '/server/issues_raw',
+    data: rawIssues
   });
   updates.push({
     ref: 'server/reports',
