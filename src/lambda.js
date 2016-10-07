@@ -42,8 +42,7 @@ function auth() {
 function updateRunUntil() {
   return new Promise( (resolve, reject) => {
     firebase.database().ref('server/run_info/run_until').transaction( () => {
-      let runTime = 1000 * 20;
-      // let runTime = 1000 * 60 * 5;
+      let runTime = 1000 * 60 * 2;
       return moment().valueOf() + runTime;
     }, () => {
       resolve();
@@ -60,14 +59,14 @@ function update() {
         database.ref('server/run_info/running').transaction( () => {
           return true;
         }, () => {
-          // Run every 10 seconds
+          // Run every 7 seconds
           let interval = setInterval( () => {
             run().then( finished => {
               if (finished) {
                 resolve();
               }
             });
-          }, 10 * 1000);
+          }, 7 * 1000);
         });
       } else {
         resolve();
