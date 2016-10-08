@@ -11,15 +11,17 @@
 let firebase = require("firebase");
 let config = require("./config.js").config;
 let moment = require('moment');
+let id;
 
 exports.handler = (event, context) => {
  
   init(event.queryParams);
   
+  id = context.awsRequestId;
   // Run Firebase
   auth()
     .then(updateRunUntil)
-    .then(update)
+    .then( () => update(id) )
     .then(context.succeed);
 
 };
@@ -50,23 +52,35 @@ function updateRunUntil() {
   });
 }
 
-function update() {
+function updateContextId(id) {
+  return new Promise( (resolve, reject) => {
+    firebase.database().ref('server/context').transaction( () => {
+      return id;
+    }, () => {
+      resolve();
+    });
+  });
+}
+
+function update(id) {
   return new Promise( (resolve, reject) => {
     checkForUpdates().then( updateNeeded => {
       if (updateNeeded) {
-        let database = firebase.database();
-        // Set running status to true
-        database.ref('server/run_info/running').transaction( () => {
-          return true;
-        }, () => {
-          // Run every 7 seconds
-          let interval = setInterval( () => {
-            run().then( finished => {
-              if (finished) {
-                resolve();
-              }
-            });
-          }, 7 * 1000);
+        updateContextId(id).then( () => {
+          let database = firebase.database();
+          // Set running status to true
+          database.ref('server/run_info/running').transaction( () => {
+            return true;
+          }, () => {
+            // Run every 5 seconds
+            let interval = setInterval( () => {
+              run().then( finished => {
+                if (finished) {
+                  resolve();
+                }
+              });
+            }, 5 * 1000);
+          });
         });
       } else {
         resolve();
@@ -98,8 +112,12 @@ function run() {
   });
 }
 
-function updateData(updates) {
+function updateData(updateObj) {
+  let updates = updateObj.updates;
   return new Promise( (resolve, reject) => {
+    if (id !== updateObj.id) {
+      resolve(true);
+    }
     let completed = 0;
     let finished = false;
     for (let i = 0; i < updates.length; i++) {
@@ -267,5 +285,8 @@ function sortData(data) {
       data: false
     }); 
   }
-  return updates;
+  return {
+    updates: updates,
+    id: data.context
+  };
 }

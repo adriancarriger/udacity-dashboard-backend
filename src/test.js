@@ -5,7 +5,7 @@ var test = require('./lambda.js').handler;
 var event = {
   queryParams: { logging: false }
 };
-var context = { succeed: onSucceed };
+var context = { succeed: onSucceed, awsRequestId: 'testing' };
 
 // Run test
 test(event, context);
