@@ -13,6 +13,11 @@ let config = require("./config.js").config;
 let moment = require('moment');
 let id;
 
+let lambdaConfig = {
+  runTime: 2, // minutes
+  updateInterval: 5 // seconds
+};
+
 exports.handler = (event, context) => {
  
   init(event.queryParams);
@@ -44,7 +49,7 @@ function auth() {
 function updateRunUntil() {
   return new Promise( (resolve, reject) => {
     firebase.database().ref('server/run_info/run_until').transaction( () => {
-      let runTime = 1000 * 60 * 2;
+      let runTime = 1000 * 60 * lambdaConfig.runTime;
       return moment().valueOf() + runTime;
     }, () => {
       resolve();
@@ -72,14 +77,14 @@ function update(id) {
           database.ref('server/run_info/running').transaction( () => {
             return true;
           }, () => {
-            // Run every 5 seconds
+            // Run every x seconds
             let interval = setInterval( () => {
               run().then( finished => {
                 if (finished) {
                   resolve();
                 }
               });
-            }, 5 * 1000);
+            }, lambdaConfig.updateInterval * 1000);
           });
         });
       } else {
@@ -176,7 +181,7 @@ function sortData(data) {
     employee: [ ]
   };
   let labels = [ ];
-  let currentIssues = 0;
+  
   /**
    * Collect data to display in charts.
    * This starts with the first date's chart data and continues to collect
@@ -195,9 +200,6 @@ function sortData(data) {
       }
     }
     sales.push( thisEmployeeTotal );
-    if (newTime === thisTime) {
-      currentIssues = data.reports[thisTime].issues.client + data.reports[thisTime].issues.employee;
-    }
   }
   /**
    * If there are only <= 2 items, then we show a blank date with
@@ -254,8 +256,8 @@ function sortData(data) {
       data: issues.employee
     },
     {
-      ref: 'client/issues/total',
-      data: currentIssues
+      ref: 'client/issues/total', // total open issues
+      data: data.reports[newTime].openIssues
     },
     {
       ref: 'client/issues_raw',

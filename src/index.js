@@ -159,39 +159,51 @@ function sortData(data) {
       let timesOfType = Object.keys( branchLog );
 
       for (let i = 0; i < timesOfType.length; i++) {
-        if (times.lastIndexOf(timesOfType[i]) === -1) {
+        if (times.indexOf(timesOfType[i]) === -1) {
           times.push( timesOfType[i] );
+          let thisTime = Number( timesOfType[i] );
           // Count issues
-          let totalIssues = {
+          let reportedIssues = {
             client: 0,
             employee: 0
           };
+          let openIssues = 0;
           for (let j = 0; j < data.issues.length; j++) {
             let use = false;
             let opened = moment(data.issues[j].opened, "MM/DD/YYYY").valueOf();
             let closed;
+            let issueType = (data.issues[j].type).toLowerCase();
             if (data.issues[j].closed !== '') {
               closed = moment(data.issues[j].closed, "MM/DD/YYYY").valueOf()
             }
-            let min = false;
+            // Reported issues
             if (i === 0) {
-              if (opened <= timesOfType[0]) {
-                min = true;
+              /**
+               * If checking the first date of business, accept any issue opened on or before
+               */
+              if (opened <= Number( timesOfType[0] )) {
+                reportedIssues[issueType]++;
               }
             } else {
-              if (opened > timesOfType[i - 1] || opened <= timesOfType[i]) {
-                min = true;
+              /**
+               * If checking after the first date of business, accept any issue
+               *  opened after the last date checked up to the current date
+               */
+              if (opened > Number( timesOfType[i - 1] ) && opened <= thisTime) {
+                reportedIssues[issueType]++;
               }
             }
-            if (min && (closed === undefined || timesOfType[i] < closed) ) {
-              let issueType = (data.issues[j].type).toLowerCase();
-              totalIssues[issueType]++;
+            // Open issues
+            if (opened <= thisTime
+              && (data.issues[j].closed === '' || closed > thisTime) ) {
+              openIssues++;
             }
           }
           // Save data
-          reports[timesOfType[i]] = {
+          reports[thisTime] = {
             branches: { },
-            issues: totalIssues
+            issues: reportedIssues, // total reported issues for time period
+            openIssues: openIssues
           }
         }
       }
