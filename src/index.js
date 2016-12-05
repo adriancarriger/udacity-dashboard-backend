@@ -270,6 +270,7 @@ function sortData(data) {
      type: data.issues[i].type,
      complainer: complainer,
      complainee: complainee,
+     email: data.issues[i].email,
      comments: data.issues[i].comments,
      opened: data.issues[i].opened,
      closed: data.issues[i].closed
