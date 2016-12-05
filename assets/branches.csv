@@ -1,3 +1,14 @@
-id,city,state,lat,lng,average_employees,average_clients,opened,closed,comments
-1,Scranton,PA,41.41,-75.66,24,50,4/1/1949,7/15/2017,
-2,Akron,OH,41.06,-81.70,20,50,5/1/2008,,
+id,city,state,lat,lng,average_employees,average_clients,opened,closed,ref,comments
+1,Scranton,PA,41.41,-75.66,1,20,4/1/1949,7/15/2017,http://theoffice.wikia.com/wiki/Dunder_Mifflin_Paper_Company,
+2,Akron,OH,41.06,-81.70,20,30,6/4/1963,7/15/2017,,
+3,Stamford,CT,41.05,-73.54,30,50,4/1/1949,11/16/2006,http://theoffice.wikia.com/wiki/The_Merger,Merged to Scranton
+4,Nashua,NH,42.77,-71.47,20,10,3/30/1955,7/15/2017,,
+5,Utica,NY,43.10,-75.23,20,70,5/3/1984,7/15/2017,,
+6,Albany,NY,42.65,-73.76,20,100,1/6/1993,2/1/2009,http://theoffice.wikia.com/wiki/Stress_Relief,
+7,Rochester,NY,43.16,-77.61,20,30,3/6/1974,12/10/2009,http://theoffice.wikia.com/wiki/Dunder_Mifflin_Rochester,
+8,Syracuse,NY,43.05,-76.15,20,20,11/23/1998,7/15/2017,,
+9,Binghamton,NY,42.10,-75.92,20,80,5/2/1953,5/3/2012,https://en.wikipedia.org/wiki/Turf_War_(The_Office),Robert California shuts it down
+10,Buffalo,NY,42.89,-78.88,20,30,8/2/1987,5/14/2009,http://theoffice.wikia.com/wiki/Company_Picnic,
+11,Camden,NJ,39.93,-75.12,20,20,4/2/1963,3/5/2009,http://theoffice.wikia.com/wiki/Dunder_Mifflin_Camden,
+12,Pittsfield,MA,42.45,-73.25,20,60,4/2/1963,3/1/1982,http://theoffice.wikia.com/wiki/Dunder_Mifflin_Pittsfield,
+13,Yonkers,NY,40.93,-73.90,20,30,4/1/1949,4/12/2009,http://theoffice.wikia.com/wiki/Dunder_Mifflin_Camden,

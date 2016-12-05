@@ -1,6 +1,7 @@
 'use strict';
 
 let firebase = require("firebase");
+let fs = require('fs');
 let Promise = require("promise");
 let path = require('path');
 let Converter = require("csvtojson").Converter;
@@ -8,7 +9,7 @@ let moment = require('moment');
 
 let config = require("./config.js").config;
 
-let items = ['branches', 'employees', 'clients', 'changes', 'issues'];
+let csvItems = ['branches', 'changes'];
 
 init(false);
 
@@ -22,14 +23,18 @@ function prepareData() {
   let completed = 0;
   let preparedData = { };
   return new Promise(function (resolve, reject) {
-    for (let i = 0; i < items.length; i++) {
-       let name = items[i];
+    // JSON 
+    let filePath = path.join(__dirname, '../assets/issues.json');
+    preparedData.issues = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    // CSV
+    for (let i = 0; i < csvItems.length; i++) {
+       let name = csvItems[i];
        let filePath = path.join(__dirname, '../assets/', name + '.csv');
        getJson( filePath )
         .then( data => {
           preparedData[name] = data;
           completed++;
-          if (completed === items.length) {
+          if (completed === csvItems.length) {
             resolve(preparedData);
           }
         });
@@ -89,6 +94,9 @@ function sortData(data) {
 
   for (let i = 0; i < data.changes.length; i++) {
     let stamp = moment(data.changes[i].date, "MM/DD/YYYY").valueOf();
+    if (data.changes[i].date === '') {
+      console.error('Error in changes.csv => No date found for id: ' + data.changes[i].related_id);
+    }
     let branchId = data.changes[i].branch_id;
     let changeType = (data.changes[i].type).toLowerCase() + 's';
     
@@ -152,12 +160,11 @@ function sortData(data) {
   let reports = { };
   for (let changeType in changes) {
     if (changes.hasOwnProperty(changeType)) {
-      let branchLog = sortType( changes[changeType], data.branches, firstDate, branchInfo, changeType );
-      
+      let branchLog = sortType( changes.employees, data.branches, firstDate, branchInfo, changeType );
       branchLogs[changeType] = branchLog;
 
       let timesOfType = Object.keys( branchLog );
-
+      
       for (let i = 0; i < timesOfType.length; i++) {
         if (times.indexOf(timesOfType[i]) === -1) {
           times.push( timesOfType[i] );
@@ -170,7 +177,7 @@ function sortData(data) {
           let openIssues = 0;
           for (let j = 0; j < data.issues.length; j++) {
             let use = false;
-            let opened = moment(data.issues[j].opened, "MM/DD/YYYY").valueOf();
+            let opened = moment(data.issues[j].opened, "MM/DD/YYYY").valueOf();            
             let closed;
             let issueType = (data.issues[j].type).toLowerCase();
             if (data.issues[j].closed !== '') {
@@ -313,7 +320,7 @@ function sortType(changes, branches, firstDate, branchInfo, type) {
   }
 
   let randomChanges = { };
-  let maxVariation = 5;
+  let maxVariation = 8;
   let branchChanges = [ ];
   // Create imaginary changes for unlisted branches
   for (let stamp in aggregate) {
@@ -331,8 +338,7 @@ function sortType(changes, branches, firstDate, branchInfo, type) {
           } else if (randomChanges[branchId] <= -maxVariation) {
             change = 3;
           } else {
-            // use random number between -2 and 2
-            change = Math.floor(Math.random() * 5) - 2;
+            change = Math.floor(Math.random() * 6) - 3;
           }
           randomChanges[branchId] += change;
           aggregate[stamp][branchId] = change;

@@ -4,3 +4,121 @@ date,type,related_id,branch_id,needs improvement,ref_url,comments
 4/23/2009,Employee,1,1,,http://theoffice.wikia.com/wiki/Broke,
 5/5/2011,Employee,1,-1,,http://theoffice.wikia.com/wiki/The_Inner_Circle,
 5/5/2007,Client,1,1,TRUE,,just a test
+5/1/1996,Employee,2,1,,,Guess
+1/11/2007,Employee,2,-1,,http://theoffice.wikia.com/wiki/Traveling_Salesmen,Dwight quits
+1/18/2007,Employee,2,1,,http://theoffice.wikia.com/wiki/The_Return,Dwight comes back from Staples
+5/1/1996,Employee,3,1,,,Guess
+10/21/2010,Employee,4,1,,http://theoffice.wikia.com/wiki/Danny_Cordray,
+5/1/1996,Employee,5,1,,,Guess
+9/20/2012,Employee,6,1,,http://theoffice.wikia.com/wiki/New_Guys,
+11/15/2012,Employee,6,-1,,http://theoffice.wikia.com/wiki/The_Whale,Leaves with Jan
+1/17/2013,Employee,6,1,,http://theoffice.wikia.com/wiki/Suit_Warehouse,Returns from Jan
+9/20/2012,Employee,7,1,,,
+5/1/1996,Employee,8,1,,,Guess
+5/1/1996,Employee,9,1,,,Guess
+10/18/2005,Employee,9,-1,,,Devon is let go
+5/16/2013,Employee,9,1,,,Dwight rehires Devon
+10/13/2011,Employee,10,1,,http://theoffice.wikia.com/wiki/Val,Hired after warehouse quit in the 'Lotto'
+10/14/2010,Employee,11,1,,http://theoffice.wikia.com/wiki/Nate,
+9/27/2005,Employee,12,1,,http://theoffice.wikia.com/wiki/Glenn,
+10/5/2011,Employee,12,-1,,,Won lottery and quit
+10/6/2011,Employee,12,1,TRUE,,Rehired - not sure about date
+9/21/2006,Employee,13,1,,http://theoffice.wikia.com/wiki/Hide,Guess
+10/5/2011,Employee,13,-1,,,Won lottery and quit
+10/6/2011,Employee,13,1,TRUE,,Rehired - not sure about date
+4/9/2009,Employee,14,1,,,
+5/1/1996,Employee,15,3,,,Guess
+11/16/2006,Employee,15,1,,http://theoffice.wikia.com/wiki/The_Merger,Transfer from Stamford branch
+11/30/2006,Employee,15,-1,,https://en.wikipedia.org/wiki/The_Convict,Choose to quit
+5/1/1996,Employee,16,3,,,Guess
+11/16/2006,Employee,16,1,,http://theoffice.wikia.com/wiki/The_Merger,Transfer from Stamford branch
+1/4/2007,Employee,16,-1,,http://theoffice.wikia.com/wiki/Hannah_Smoterich-Barr,Quits
+5/1/1996,Employee,17,4,,http://theoffice.wikia.com/wiki/Holly_Flax,Guess
+5/15/2008,Employee,17,1,,"http://theoffice.wikia.com/wiki/Goodbye,_Toby",Transfers
+10/30/2008,Employee,17,4,TRUE,http://theoffice.wikia.com/wiki/Employee_Transfer,---->When does she come back to Scranton?
+5/1/1996,Employee,18,1,,http://theoffice.wikia.com/wiki/Kelly_Kapoor,Guess
+9/20/2012,Employee,18,-1,,,moved to Miami University
+3/24/2005,Employee,19,1,,http://theoffice.wikia.com/wiki/Ryan_Howard,Joins as a temp
+5/17/2007,Employee,19,-1,,,Takes a job at corporate
+9/25/2008,Employee,19,1,,http://theoffice.wikia.com/wiki/Weight_Loss,
+11/20/2008,Employee,19,-1,,http://theoffice.wikia.com/wiki/Frame_Toby,Goes to Thailand (Fort Lauderdale)
+4/23/2009,Employee,19,1,,http://theoffice.wikia.com/wiki/Broke,Back from Michael Scott Paper Company
+4/23/2011,Employee,19,-1,TRUE,,--->When does he leave exactly?
+5/1/1996,Employee,20,1,,http://theoffice.wikia.com/wiki/Madge_Madsen,Guess
+10/5/2011,Employee,20,-1,,,Won lottery and quit
+5/1/1996,Employee,21,1,TRUE,http://theoffice.wikia.com/wiki/Philip,Guess --->What happens to him?
+5/1/1996,Employee,22,1,,,Guess
+10/18/2012,Employee,22,-1,,https://en.wikipedia.org/wiki/Work_Bus,Died
+11/15/2009,Employee,23,1,,http://theoffice.wikia.com/wiki/Matt,
+10/5/2011,Employee,23,-1,,http://theoffice.wikia.com/wiki/Matt,Won lottery and quit
+5/1/1996,Employee,24,3,,,Guess
+11/16/2006,Employee,24,1,,http://theoffice.wikia.com/wiki/The_Merger,
+5/2/2013,Employee,24,-1,,,Leaves to pursue his dream
+5/1/1996,Employee,25,1,,,Guess
+1/31/2013,Employee,25,-1,,http://theoffice.wikia.com/wiki/Customer_Loyalty,
+3/15/2012,Employee,26,1,,http://theoffice.wikia.com/wiki/Get_the_Girl,
+5/16/2013,Employee,26,-1,,http://theoffice.wikia.com/wiki/Finale,
+5/1/1996,Employee,27,1,,,Guess
+5/16/2013,Employee,27,-1,,http://theoffice.wikia.com/wiki/Dunder_Mifflin_Scranton,Quit after marrying Dwight
+5/1/1996,Employee,28,1,,,Guess
+2/22/2007,Employee,28,-1,,http://theoffice.wikia.com/wiki/Roy_Anderson,Roy gets fired
+5/1/1996,Employee,29,3,,,Guess
+11/15/2006,Employee,29,1,,,
+11/16/2006,Employee,29,-1,,http://theoffice.wikia.com/wiki/The_Merger,
+5/1/1992,Employee,30,1,,http://theoffice.wikia.com/wiki/Todd_Packer,Was at the company 20 years
+3/8/2012,Employee,30,-1,,http://theoffice.wikia.com/wiki/Last_Day_in_Florida,Fired
+5/1/1996,Employee,31,1,,,Guess
+1/31/2013,Employee,31,-1,,http://theoffice.wikia.com/wiki/Vandalism,Fired
+5/1/1996,Employee,32,1,,,Guess
+5/16/2013,Employee,32,-1,,,Fired by Dwight
+5/1/1996,Employee,33,1,,,Guess
+5/15/2008,Employee,33,-1,,"http://theoffice.wikia.com/wiki/Goodbye,_Toby",Costa Rica
+11/20/2008,Employee,33,1,,http://theoffice.wikia.com/wiki/Frame_Toby,
+5/16/2013,Employee,33,-1,,http://theoffice.wikia.com/wiki/Finale,
+5/1/1996,Employee,34,1,,,Guess
+9/21/2006,Employee,34,3,,http://theoffice.wikia.com/wiki/Gay_Witch_Hunt,
+11/16/2006,Employee,34,1,,http://theoffice.wikia.com/wiki/The_Merger,
+5/16/2013,Employee,34,-1,,http://theoffice.wikia.com/wiki/Finale,
+5/1/1996,Employee,35,1,,,Guess
+4/9/2009,Employee,35,-1,,,Joins Michael Scott Paper Company
+4/23/2009,Employee,35,1,,,
+5/16/2013,Employee,35,-1,,,
+5/1/1996,Employee,36,3,,,Guess
+11/16/2006,Employee,36,1,,http://theoffice.wikia.com/wiki/The_Merger,
+9/27/2007,Employee,36,5,,http://theoffice.wikia.com/wiki/Dunder_Mifflin_Utica,
+5/1/1996,Employee,37,1,,,Guess
+3/17/2005,Employee,37,-1,,http://theoffice.wikia.com/wiki/Mentioned_Characters#Tom_Peets,
+6/10/1968,Employee,38,1,,,
+1/1/2000,Employee,38,-1,,,
+5/1/1996,Employee,39,1,,,Guess
+12/14/2006,Employee,39,-1,,http://theoffice.wikia.com/wiki/Luanne,
+9/25/2008,Employee,40,1,,,
+11/19/2009,Employee,40,-1,,http://theoffice.wikia.com/wiki/Ronni,
+10/4/2005,Employee,41,1,,,
+11/1/2005,Employee,41,-1,,,
+4/14/2011,Employee,42,1,,http://theoffice.wikia.com/wiki/Deangelo_Vickers,
+5/5/2011,Employee,42,-1,,,
+5/19/2011,Employee,43,1,,http://theoffice.wikia.com/wiki/Robert_California,
+5/10/2012,Employee,43,-1,,,
+2/4/2010,Employee,44,1,,http://theoffice.wikia.com/wiki/Gabe_Lewis,
+2/14/2013,Employee,44,-1,,,
+5/1/1996,Employee,45,1,,,Guess
+5/16/2013,Employee,45,-1,,,faked his death in order to escape the police
+5/1/1996,Employee,46,1,,,Guess
+5/16/2013,Employee,46,-1,,http://theoffice.wikia.com/wiki/Stanley_Hudson,retired
+5/1/1996,Employee,47,1,,,Guess
+3/24/2005,Employee,47,-1,,http://theoffice.wikia.com/wiki/Background_Employees#Pilot_Employees,
+5/1/1996,Employee,48,1,,,Guess
+3/24/2005,Employee,48,-1,,http://theoffice.wikia.com/wiki/Background_Employees#Pilot_Employees,
+5/1/1996,Employee,49,1,,,Guess
+3/24/2005,Employee,49,-1,,http://theoffice.wikia.com/wiki/Background_Employees#Pilot_Employees,
+5/1/1996,Employee,50,1,,,Guess
+3/24/2005,Employee,50,-1,,http://theoffice.wikia.com/wiki/Background_Employees#Pilot_Employees,
+5/16/2013,Employee,51,1,,http://theoffice.wikia.com/wiki/Background_Employees#Dakota,Replaces Kevin
+5/16/2013,Employee,52,1,,http://theoffice.wikia.com/wiki/Background_Employees#Asian_Employee,Replaces Nellie
+5/16/2013,Employee,53,1,,http://theoffice.wikia.com/wiki/Background_Employees#Malcolm,
+5/1/1996,Employee,54,3,,http://theoffice.wikia.com/wiki/Josh_Porter,Guess
+11/9/2006,Employee,54,-1,,http://theoffice.wikia.com/wiki/Branch_Closing,
+6/8/2007,Employee,55,6,,http://theoffice.wikia.com/wiki/Mentioned_Characters#Jeff,
+5/1/1996,Employee,56,6,,,Guess
+6/8/2007,Employee,56,-1,,http://theoffice.wikia.com/wiki/Craig,
