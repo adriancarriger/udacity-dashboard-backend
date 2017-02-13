@@ -10,10 +10,10 @@
   "author": "Adrian Carriger",
   "license": "MIT",
   "dependencies": {
-    "async": "^0.9.0",
-    "aws-lambda-invoke": "^2.1.1",
+    "async": "^2.1.4",
+    "aws-lambda-invoke": "^3.0.0",
     "aws-sdk": "^2.3.5",
-    "dotenv": "^0.4.0",
+    "dotenv": "^4.0.0",
     "firebase": "^3.4.0",
     "gtfs2geojson": "^2.0.0",
     "moment": "^2.15.1",
@@ -22,13 +22,13 @@
   "devDependencies": {
     "aws-sdk": "^2.3.5",
     "csvtojson": "^1.0.2",
-    "del": "^1.1.0",
+    "del": "^2.2.2",
     "gulp": "^3.8.10",
-    "gulp-install": "^0.2.0",
+    "gulp-install": "^0.6.0",
     "gulp-rename": "^1.2.0",
-    "gulp-zip": "^2.0.2",
+    "gulp-zip": "^4.0.0",
     "kinesis": "^1.0.2",
-    "node-notifier": "^4.5.0",
+    "node-notifier": "^5.0.2",
     "run-sequence": "^1.1.5",
     "stream": "0.0.2"
   }
